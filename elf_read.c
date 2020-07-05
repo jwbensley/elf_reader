@@ -24,15 +24,15 @@
  */
 
 
-#include <elf.h>      // EI_NIDENT, Elf64_Ehdr, Elf64_Shdr, ELFMAG, SHN_UNDEF,
-                      // SHT_STRTAB
-#include <inttypes.h> // PRI*N
-#include <stdio.h>    // FILE, fclose(), fopen(), fprintf(), fread(), fseek(),
-                      // ftell()
-#include <string.h>   // memcmp()
-#include <stdlib.h>   // EXIT_FAILURE, EXIT_SUCCESS, free(), malloc()
+#include <elf.h>       // EI_NIDENT, Elf64_Ehdr, Elf64_Shdr, ELFMAG, SHN_UNDEF,
+                       // SHT_STRTAB
+#include <inttypes.h>  // PRI*N
+#include <stdio.h>     // FILE, fclose(), fopen(), fprintf(), fread(), fseek(),
+                       // ftell()
+#include <string.h>    // memcmp()
+#include <stdlib.h>    // EXIT_FAILURE, EXIT_SUCCESS, free(), malloc()
 
-#include "elf_read.h"
+#include "./elf_read.h"
 
 
 int32_t load_file(const char* filename, void** file_data, uint64_t* file_len) {
@@ -40,11 +40,11 @@ int32_t load_file(const char* filename, void** file_data, uint64_t* file_len) {
     printf("Loading file: %s\n", filename);
     FILE* fp = fopen(filename, "rb");
 
-    if(fp == NULL) {
+    if (fp == NULL) {
 
         fprintf(stderr, "Error opening fp %s for reading\n", filename);
         return(EXIT_FAILURE);
-    
+
     } else {
 
         fseek(fp, 0L, SEEK_END);
@@ -136,18 +136,13 @@ int32_t read_elf_header(void* file_data, uint64_t file_len) {
      e_shentsize holds the size in bytes of each entry.
      e_shstrndx contains index of the section elf_header table entry that contains the section names. 
      */
-    
+
     printf("Section header table (elf_header->e_shoff) == 0x%" PRIX64
-        " (%" PRIu64 ")\n",
-        elf_header->e_shoff,
-        elf_header->e_shoff
-    );
-    printf("Section header table entry size (elf_header->e_shentsize) == %" PRIu16 "\n",
-        elf_header->e_shentsize
-    );
-    printf("Section header table entries (elf_header->e_shnum) == %" PRIu16 "\n",
-        elf_header->e_shnum
-    );
+        " (%" PRIu64 ")\n", elf_header->e_shoff, elf_header->e_shoff);
+    printf("Section header table entry size (elf_header->e_shentsize) == "
+        "%" PRIu16 "\n", elf_header->e_shentsize);
+    printf("Section header table entries (elf_header->e_shnum) == "
+        "%" PRIu16 "\n", elf_header->e_shnum);
     printf("\n");
 
 
@@ -169,23 +164,21 @@ int32_t read_elf_header(void* file_data, uint64_t file_len) {
     */
     Elf64_Shdr *shdr_string = NULL;
 
-    printf("Section header table index for string table (elf_header->e_shstrndx) == %" PRIu16
-        "\n",
-        elf_header->e_shstrndx
-    );
+    printf("Section header table index for string table "
+        "(elf_header->e_shstrndx) == %" PRIu16 "\n",
+        elf_header->e_shstrndx);
 
     if (elf_header->e_shstrndx == SHN_UNDEF) {
         printf("This ELF elf_header has no section name string table!\n");
     } else {
-    
+
         // Offset to the string table section header in the section header table
-        uint64_t sht_e_string_off = elf_header->e_shoff + 
+        uint64_t sht_e_string_off = elf_header->e_shoff +
         (elf_header->e_shstrndx * elf_header->e_shentsize);
-        
+
         printf("String table section header entry offset in section "
             "header table == 0x%" PRIX64 " (%" PRIu64 ")\n",
-            sht_e_string_off, sht_e_string_off
-        );
+            sht_e_string_off, sht_e_string_off);
 
         shdr_string = (Elf64_Shdr*)((uint8_t*)file_data + sht_e_string_off);
         if (shdr_string->sh_type == SHT_STRTAB) {
@@ -220,8 +213,10 @@ int32_t read_elf_header(void* file_data, uint64_t file_len) {
     // Display each section header table entry
     for (uint16_t i = 0; i < elf_header->e_shnum; i++) {
 
-        uint64_t sht_e_offset = elf_header->e_shoff + (i * elf_header->e_shentsize);
+        uint64_t sht_e_offset = elf_header->e_shoff +
+            (i * elf_header->e_shentsize);
         printf("Section header table entry %" PRIu16 ":\n", i);
+
         Elf64_Shdr *shdr = (Elf64_Shdr*)((uint8_t*)file_data + sht_e_offset);
 
         printf("Section header table entry offset == 0x%" PRIX64 " (%"
@@ -252,7 +247,7 @@ int32_t read_elf_header(void* file_data, uint64_t file_len) {
 
 const char * shdr_type_to_str(uint32_t shdr_type) {
 
-    switch(shdr_type) {
+    switch (shdr_type) {
         case SHT_NULL:
             return "SHT_NULL";
         case SHT_PROGBITS:
