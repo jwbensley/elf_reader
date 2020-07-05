@@ -235,7 +235,6 @@ int32_t read_elf_header(void* file_data, uint64_t file_len) {
         }
 
         char flags[100] = {0};
-        strcpy(flags, "NULL");
         shdr_flags_to_str(flags, shdr->sh_flags);
         printf("Section flags 0x%" PRIX64 " (%" PRIu64 ") == %s\n",
             shdr->sh_flags, shdr->sh_flags, flags);
@@ -297,6 +296,10 @@ void shdr_flags_to_str(char *flags, uint64_t sh_flags) {
     }
     if ((sh_flags & SHF_EXCLUDE) == SHF_EXCLUDE) {
         strcat(flags, "SHF_EXCLUDE ");
+    }
+
+    if (flags[0] == 0) {
+        strcpy(flags, "NULL");
     }
 
 }
