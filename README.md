@@ -1,7 +1,7 @@
 # ELF Reader
 
 #### What is it
-Example program wihch can read Linux ELF file headers.
+Example program which can read Linux ELF file headers.
 
 #### Example output
 
