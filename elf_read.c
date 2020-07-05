@@ -234,6 +234,12 @@ int32_t read_elf_header(void* file_data, uint64_t file_len) {
 
         }
 
+        char flags[100] = {0};
+        strcpy(flags, "NULL");
+        shdr_flags_to_str(flags, shdr->sh_flags);
+        printf("Section flags 0x%" PRIX64 " (%" PRIu64 ") == %s\n",
+            shdr->sh_flags, shdr->sh_flags, flags);
+
         printf("Section length == 0x%" PRIX64 " (%" PRIu64 ")\n",
             shdr->sh_size, shdr->sh_size);
 
@@ -244,6 +250,56 @@ int32_t read_elf_header(void* file_data, uint64_t file_len) {
 
 }
 
+
+void shdr_flags_to_str(char *flags, uint64_t sh_flags) {
+
+    if ((sh_flags & SHF_WRITE) == SHF_WRITE) {
+        strcat(flags, "SHF_WRITE ");
+    }
+    if ((sh_flags & SHF_ALLOC) == SHF_ALLOC) {
+        strcat(flags, "SHF_ALLOC ");
+    }
+    if ((sh_flags & SHF_EXECINSTR) == SHF_EXECINSTR) {
+        strcat(flags, "SHF_EXECINSTR ");
+    }
+    if ((sh_flags & SHF_MERGE) == SHF_MERGE) {
+        strcat(flags, "SHF_MERGE ");
+    }
+    if ((sh_flags & SHF_STRINGS) == SHF_STRINGS) {
+        strcat(flags, "SHF_STRINGS ");
+    }
+    if ((sh_flags & SHF_INFO_LINK) == SHF_INFO_LINK) {
+        strcat(flags, "SHF_INFO_LINK ");
+    }
+    if ((sh_flags & SHF_LINK_ORDER) == SHF_LINK_ORDER) {
+        strcat(flags, "SHF_LINK_ORDER ");
+    }
+    if ((sh_flags & SHF_OS_NONCONFORMING) == SHF_OS_NONCONFORMING) {
+        strcat(flags, "SHF_OS_NONCONFORMING ");
+    }
+    if ((sh_flags & SHF_GROUP) == SHF_GROUP) {
+        strcat(flags, "SHF_GROUP ");
+    }
+    if ((sh_flags & SHF_TLS) == SHF_TLS) {
+        strcat(flags, "SHF_TLS ");
+    }
+    if ((sh_flags & SHF_COMPRESSED) == SHF_COMPRESSED) {
+        strcat(flags, "SHF_COMPRESSED ");
+    }
+    if ((sh_flags & SHF_MASKOS) == SHF_MASKOS) {
+        strcat(flags, "SHF_MASKOS ");
+    }
+    if ((sh_flags & SHF_MASKPROC) == SHF_MASKPROC) {
+        strcat(flags, "SHF_MASKPROC ");
+    }
+    if ((sh_flags & SHF_ORDERED) == SHF_ORDERED) {
+        strcat(flags, "SHF_ORDERED ");
+    }
+    if ((sh_flags & SHF_EXCLUDE) == SHF_EXCLUDE) {
+        strcat(flags, "SHF_EXCLUDE ");
+    }
+
+}
 
 const char * shdr_type_to_str(uint32_t shdr_type) {
 
@@ -286,7 +342,7 @@ const char * shdr_type_to_str(uint32_t shdr_type) {
             return NULL;
     }
 
-    return 0;
+    return NULL;
 }
 
 

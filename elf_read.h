@@ -29,6 +29,7 @@
 
 int32_t load_file(const char* filename, void** file_data, uint64_t* file_len);
 int32_t read_elf_header(void* file_data, uint64_t file_len);
+void shdr_flags_to_str(char* flags, uint64_t sh_flags);
 const char * shdr_type_to_str(uint32_t shdr_type);
 
 
